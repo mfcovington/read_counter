@@ -65,11 +65,11 @@ for (@bam_files) {
         $gene_counts{ $elements[2] }++;
     }
     unless ($num_only) {
-        open my $out_alpha_fh, '>', "$bam.counts_a";
+        open my $out_alpha_fh, '>', "$out_dir/$bam.counts_a";
         say $out_alpha_fh "$_\t$gene_counts{$_}" for sort keys %gene_counts;
     }
     unless ($alpha_only) {
-        open my $out_count_fh, '>', "$bam.counts_1";
+        open my $out_count_fh, '>', "$out_dir/$bam.counts_1";
         say $out_count_fh "$_\t$gene_counts{$_}"
           for sort { $gene_counts{$b} <=> $gene_counts{$a} } keys %gene_counts;
     }
