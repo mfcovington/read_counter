@@ -16,18 +16,20 @@ my $bam_dir = "./";
 my $out_dir = "./";
 my $prefix  = "";
 my $suffix  = ".bam";
+my $verbose;
 
 my $options = GetOptions(
     "bam_dir=s" => \$bam_dir,
     "out_dir=s" => \$out_dir,
     "prefix=s"  => \$prefix,
     "suffix=s"  => \$suffix,
+    "verbose"   => \$verbose,
 );
 
 my @bam_files = glob "$bam_dir/$prefix*$suffix";
 
 for (@bam_files) {
-    say "  Processing: $_";
+    say "  Processing: $_" if $verbose;
     my ($bam) = $_ =~ m|.*\/([^\/]*)\.bam|;
     my %gene_counts;
     open my $bam_fh, '-|', "samtools view $_";
