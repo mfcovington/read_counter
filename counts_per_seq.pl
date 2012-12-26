@@ -18,6 +18,7 @@ my $usage = <<EOF;
         --bam_dir        Directory containing .bam files [./]
         --out_dir        Output directory [./]
         --seq_list       File containing sequences to count (Default: all sequences)
+        --no_zero        Ignore sequences with zero counts
         --consolidate    Delimiter between Sample ID and Rep ID *
         --prefix         Filename prefix †
         --suffix         Filename suffix † [.bam]
@@ -39,13 +40,14 @@ my $bam_dir = "./";
 my $out_dir = "./";
 my $prefix  = "";
 my $suffix  = ".bam";
-my ( $consolidate, $seq_file, $alpha_only, $num_only, $verbose, $help );
+my ( $consolidate, $seq_file, $no_zero, $alpha_only, $num_only, $verbose, $help );
 
 my $options = GetOptions(
     "bam_dir=s"     => \$bam_dir,
     "out_dir=s"     => \$out_dir,
-    "consolidate=s" => \$consolidate,
     "seq_file=s"    => \$seq_file,
+    "no_zero"       => \$no_zero,
+    "consolidate=s" => \$consolidate,
     "prefix=s"      => \$prefix,
     "suffix=s"      => \$suffix,
     "alpha_only"    => \$alpha_only,
@@ -85,13 +87,13 @@ for my $bam (@bam_file_list) {
     my @bam_group = glob "$bam*";
 
     my %gene_counts;
-    if ( defined $seq_file ) {
+    if ( defined $seq_file && !$no_zero ) {
         $gene_counts{$_} = 0 for keys %seq_list;
     }
-    else {
+    elsif ( !$no_zero ) {
         open my $header_fh, '-|', "samtools view -H $bam_group[0] |
           grep -e ^\@SQ | cut -f2 | cut -d: -f2";
-        chomp ( my @header = <$header_fh> );
+        chomp( my @header = <$header_fh> );
         $gene_counts{$_} = 0 for @header;
         close $header_fh;
     }
