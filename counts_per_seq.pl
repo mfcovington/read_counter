@@ -83,6 +83,9 @@ if ( defined $seq_file ) {
 for my $bam (@bam_file_list) {
     say "  Combining:  $bam" if $verbose && defined $consolidate;
     my %gene_counts;
+    if ( defined $seq_file ) {
+        $gene_counts{$_} = 0 for keys %seq_list;
+    }
     for ( glob "$bam*" ) {
         say "  Processing: $_" if $verbose;
         open my $bam_fh, '-|', "samtools view $_";
