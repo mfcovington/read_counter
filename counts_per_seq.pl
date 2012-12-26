@@ -18,6 +18,7 @@ my $usage = <<EOF;
         --bam_dir        Directory containing .bam files [./]
         --out_dir        Output directory [./]
         --seq_list       File containing sequences to count (Default: all sequences)
+        --no_zero        Ignore sequences with zero counts
         --consolidate    Delimiter between Sample ID and Rep ID *
         --prefix         Filename prefix †
         --suffix         Filename suffix † [.bam]
@@ -39,13 +40,15 @@ my $bam_dir = "./";
 my $out_dir = "./";
 my $prefix  = "";
 my $suffix  = ".bam";
-my ( $consolidate, $seq_file, $alpha_only, $num_only, $verbose, $help );
+my ( $consolidate, $seq_file, $no_zero, $alpha_only, $num_only, $verbose,
+    $help );
 
 my $options = GetOptions(
     "bam_dir=s"     => \$bam_dir,
     "out_dir=s"     => \$out_dir,
-    "consolidate=s" => \$consolidate,
     "seq_file=s"    => \$seq_file,
+    "no_zero"       => \$no_zero,
+    "consolidate=s" => \$consolidate,
     "prefix=s"      => \$prefix,
     "suffix=s"      => \$suffix,
     "alpha_only"    => \$alpha_only,
@@ -61,19 +64,22 @@ die
 
 my @bam_file_list = glob "$bam_dir/$prefix*$suffix";
 
+# consolidate similar samples/replicates, if applicable
 if ( defined $consolidate ) {
-    my %bam_groups;
+    my %bam_patterns;
     for (@bam_file_list) {
         my ($group) = $_ =~ m|(.*\/[^\/]*?)\Q$consolidate\E[^\/]*|;
-        $bam_groups{$group}++;
+        $bam_patterns{$group}++;
     }
-    @bam_file_list = sort keys %bam_groups;
+    @bam_file_list = sort keys %bam_patterns;
 }
 
+# get user-defined sequences, if applicable
 my %seq_list;
 if ( defined $seq_file ) {
     open my $seq_fh, '<', $seq_file;
     chomp( my @seqs = <$seq_fh> );
+    close $seq_fh;
     $seq_list{$_}++ for @seqs;
     my $seq_count = scalar keys %seq_list;
     say "  Found $seq_count sequences in $seq_file" if $verbose;
@@ -82,8 +88,23 @@ if ( defined $seq_file ) {
 
 for my $bam (@bam_file_list) {
     say "  Combining:  $bam" if $verbose && defined $consolidate;
+    my @bam_group = glob "$bam*";
     my %gene_counts;
-    for ( glob "$bam*" ) {
+
+    # prime %gene_counts with zeros, unless --no_zero option used
+    if ( defined $seq_file && !$no_zero ) {
+        $gene_counts{$_} = 0 for keys %seq_list;
+    }
+    elsif ( !$no_zero ) {
+        open my $header_fh, '-|', "samtools view -H $bam_group[0] |
+          grep -e ^\@SQ | cut -f2 | cut -d: -f2";
+        chomp( my @header = <$header_fh> );
+        close $header_fh;
+        $gene_counts{$_} = 0 for @header;
+    }
+
+    # count reads per sequence
+    for (@bam_group) {
         say "  Processing: $_" if $verbose;
         open my $bam_fh, '-|', "samtools view $_";
         for my $line (<$bam_fh>) {
@@ -91,16 +112,21 @@ for my $bam (@bam_file_list) {
             next unless defined $seq_file && exists $seq_list{ $elements[2] };
             $gene_counts{ $elements[2] }++;
         }
+        close $bam_fh;
     }
+
+    # write to output file(s)
     my ($id) = $bam =~ m|.*\/([^\/]*)(?(?{ !defined $consolidate; })\.bam)|;
     $id .= ".$seq_file" if defined $seq_file;
     unless ($num_only) {
         open my $out_alpha_fh, '>', "$out_dir/$id.counts_a";
         say $out_alpha_fh "$_\t$gene_counts{$_}" for sort keys %gene_counts;
+        close $out_alpha_fh;
     }
     unless ($alpha_only) {
         open my $out_count_fh, '>', "$out_dir/$id.counts_1";
         say $out_count_fh "$_\t$gene_counts{$_}"
           for sort { $gene_counts{$b} <=> $gene_counts{$a} } keys %gene_counts;
+        close $out_count_fh;
     }
 }
