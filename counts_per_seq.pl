@@ -77,6 +77,7 @@ if ( defined $seq_file ) {
     $seq_list{$_}++ for @seqs;
     my $seq_count = scalar keys %seq_list;
     say "  Found $seq_count sequences in $seq_file" if $verbose;
+    $seq_file =~ s|.*\/([^\/]*)|$1|;
 }
 
 for my $bam (@bam_file_list) {
