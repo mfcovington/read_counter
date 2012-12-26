@@ -62,12 +62,12 @@ die
 my @bam_file_list = glob "$bam_dir/$prefix*$suffix";
 
 if ( defined $consolidate ) {
-    my %bam_groups;
+    my %bam_patterns;
     for (@bam_file_list) {
         my ($group) = $_ =~ m|(.*\/[^\/]*?)\Q$consolidate\E[^\/]*|;
-        $bam_groups{$group}++;
+        $bam_patterns{$group}++;
     }
-    @bam_file_list = sort keys %bam_groups;
+    @bam_file_list = sort keys %bam_patterns;
 }
 
 my %seq_list;
@@ -82,11 +82,21 @@ if ( defined $seq_file ) {
 
 for my $bam (@bam_file_list) {
     say "  Combining:  $bam" if $verbose && defined $consolidate;
+    my @bam_group = glob "$bam*";
+
     my %gene_counts;
     if ( defined $seq_file ) {
         $gene_counts{$_} = 0 for keys %seq_list;
     }
-    for ( glob "$bam*" ) {
+    else {
+        open my $header_fh, '-|', "samtools view -H $bam_group[0] |
+          grep -e ^\@SQ | cut -f2 | cut -d: -f2";
+        chomp ( my @header = <$header_fh> );
+        $gene_counts{$_} = 0 for @header;
+        close $header_fh;
+    }
+
+    for ( @bam_group ) {
         say "  Processing: $_" if $verbose;
         open my $bam_fh, '-|', "samtools view $_";
         for my $line (<$bam_fh>) {
