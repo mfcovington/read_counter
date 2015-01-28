@@ -109,7 +109,7 @@ for my $bam (@bam_file_list) {
         next unless /^.+\.bam$/;
         say "  Processing: $_" if $verbose;
         open my $bam_fh, '-|', "samtools view $_";
-        for my $line (<$bam_fh>) {
+        while ( my $line = <$bam_fh> ) {
             my @elements = split /\s/, $line;
             next if defined $seq_file && !exists $seq_list{ $elements[2] };
             $gene_counts{ $elements[2] }++;
