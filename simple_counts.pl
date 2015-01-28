@@ -92,12 +92,12 @@ sub usage {
 Usage: $0 [options] <Alignment file(s)>
 
 Options:
-  -o, --out_dir           Output directory [.]
-  -c, --csv               Output comma-delimited file (Default is tab-delimited)
-  -s, --sam               Alignment files are in SAM format (Default is BAM)
-  -t, --threads           Number of files to process simultaneously [1]
-  -v, --verbose           Report current progress
-  -h, --help              Display this usage information
+  -o, --out_dir    Output directory [.]
+  -c, --csv        Output comma-delimited file (Default is tab-delimited)
+  -s, --sam        Alignment files are in SAM format (Default is BAM)
+  -t, --threads    Number of files to process simultaneously [1]
+  -v, --verbose    Report current progress
+  -h, --help       Display this usage information
 
 EOF
 }
