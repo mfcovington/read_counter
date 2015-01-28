@@ -14,7 +14,7 @@ use File::Path 'make_path';
 use Getopt::Long;
 use Parallel::ForkManager;
 
-my ( $csv, $sam, $verbose, $help );
+my ( $csv, $verbose, $help );
 my $out_dir = '.';
 my $threads = 1;
 
@@ -22,14 +22,13 @@ my $options = GetOptions(
     "out_dir=s" => \$out_dir,
     "threads=i" => \$threads,
     "csv"       => \$csv,
-    "sam"       => \$sam,
     "verbose"   => \$verbose,
     "help"      => \$help,
 );
 
 my @alignment_file_list = @ARGV;
 
-validate_options( \@alignment_file_list, $sam, $threads, $help );
+validate_options( \@alignment_file_list, $threads, $help );
 
 my $pm = Parallel::ForkManager->new($threads);
 for my $alignment_file (@alignment_file_list) {
@@ -37,7 +36,7 @@ for my $alignment_file (@alignment_file_list) {
 
     say STDERR "Processing $alignment_file" if $verbose;
 
-    my $counts = get_counts( $alignment_file, $sam );
+    my $counts = get_counts($alignment_file);
     my $counts_file = name_counts_file( $alignment_file, $out_dir );
 
     make_path $out_dir;
@@ -50,15 +49,18 @@ $pm->wait_all_children;
 exit;
 
 sub get_counts {
-    my ( $alignment_file, $sam ) = @_;
+    my $alignment_file = shift;
     my %counts;
 
     my $alignment_fh;
-    if ($sam) {
+    if ( $alignment_file =~ /.+\.sam$/i ) {
         open $alignment_fh, "<", $alignment_file;
     }
-    else {
+    elsif ( $alignment_file =~ /.+\.bam$/i ) {
         open $alignment_fh, "-|", "samtools view -h $alignment_file";
+    }
+    else {    # Should never happen because validate_options()
+        die "File '$alignment_file' is not a .sam/.bam file\n";
     }
 
     while (<$alignment_fh>) {
@@ -79,9 +81,7 @@ sub get_counts {
 
 sub name_counts_file {
     my ( $alignment_file, $out_dir ) = @_;
-
-    my $suffix = $sam ? 'sam' : 'bam';
-    my $sample = fileparse( $alignment_file, qr/$suffix/i );
+    my $sample = fileparse( $alignment_file, qr/[sb]am/i );
 
     return "$out_dir/${sample}counts";
 }
@@ -94,7 +94,6 @@ Usage: $0 [options] <Alignment file(s)>
 Options:
   -o, --out_dir    Output directory [.]
   -c, --csv        Output comma-delimited file (Default is tab-delimited)
-  -s, --sam        Alignment files are in SAM format (Default is BAM)
   -t, --threads    Number of files to process simultaneously [1]
   -v, --verbose    Report current progress
   -h, --help       Display this usage information
@@ -103,18 +102,14 @@ EOF
 }
 
 sub validate_options {
-    my ( $alignment_file_list, $sam, $threads, $help ) = @_;
+    my ( $alignment_file_list, $threads, $help ) = @_;
 
     my @errors;
 
     for (@$alignment_file_list) {
         push @errors, "File '$_' not found" unless -e $_;
-        if ($sam) {
-            push @errors, "File '$_' is not a .sam file" unless /.+\.sam$/;
-        }
-        else {
-            push @errors, "File '$_' is not a .bam file" unless /.+\.bam$/;
-        }
+        push @errors, "File '$_' is not a .sam/.bam file"
+            unless /.+\.[sb]am$/i;
     }
 
     push @errors, "Option '--threads' must be an integer greater than 0"
