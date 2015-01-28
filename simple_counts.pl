@@ -65,6 +65,9 @@ sub get_counts {
             next;
         }
 
+        my $gene = (split)[2];
+        next if $gene =~ /^\*$/;    # skip unmapped reads
+        $counts{$gene}++;
     }
 
     close $alignment_fh;
