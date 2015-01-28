@@ -128,6 +128,12 @@ sub validate_options {
 }
 
 sub write_counts {
-    my ( $counts, $alignment_file, $out_dir ) = @_;
+    my ( $counts, $counts_file ) = @_;
 
+    open my $counts_fh, ">", $counts_file;
+    for my $gene ( sort keys %$counts ) {
+        my $delimiter = "\t";
+        say $counts_fh join $delimiter, $gene, $$counts{$gene};
+    }
+    close $counts_fh;
 }
