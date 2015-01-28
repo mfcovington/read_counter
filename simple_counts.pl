@@ -57,7 +57,7 @@ sub get_counts {
         open $alignment_fh, "<", $alignment_file;
     }
     else {
-        open $alignment_fh, "-|", "samtools view -H $alignment_file";
+        open $alignment_fh, "-|", "samtools view -h $alignment_file";
     }
 
     while (<$alignment_fh>) {
