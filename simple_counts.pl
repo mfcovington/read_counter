@@ -14,13 +14,14 @@ use File::Path 'make_path';
 use Getopt::Long;
 use Parallel::ForkManager;
 
-my ( $sam, $verbose, $help );
+my ( $csv, $sam, $verbose, $help );
 my $out_dir = '.';
 my $threads = 1;
 
 my $options = GetOptions(
     "out_dir=s" => \$out_dir,
     "threads=i" => \$threads,
+    "csv"       => \$csv,
     "sam"       => \$sam,
     "verbose"   => \$verbose,
     "help"      => \$help,
@@ -40,7 +41,7 @@ for my $alignment_file (@alignment_file_list) {
     my $counts_file = name_counts_file( $alignment_file, $out_dir );
 
     make_path $out_dir;
-    write_counts( $counts, $counts_file );
+    write_counts( $counts, $counts_file, $csv );
 
     $pm->finish;
 }
@@ -92,6 +93,7 @@ Usage: $0 [options] <Alignment file(s)>
 
 Options:
   -o, --out_dir           Output directory [.]
+  -c, --csv               Output comma-delimited file (Default is tab-delimited)
   -s, --sam               Alignment files are in SAM format (Default is BAM)
   -t, --threads           Number of files to process simultaneously [1]
   -v, --verbose           Report current progress
@@ -128,11 +130,11 @@ sub validate_options {
 }
 
 sub write_counts {
-    my ( $counts, $counts_file ) = @_;
+    my ( $counts, $counts_file, $csv ) = @_;
 
     open my $counts_fh, ">", $counts_file;
     for my $gene ( sort keys %$counts ) {
-        my $delimiter = "\t";
+        my $delimiter = $csv ? ',' : "\t";
         say $counts_fh join $delimiter, $gene, $$counts{$gene};
     }
     close $counts_fh;
