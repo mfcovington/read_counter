@@ -60,6 +60,10 @@ sub get_counts {
     }
 
     while (<$alignment_fh>) {
+        if (/^@/) {    # Set count to 0 for all genes in header
+            $counts{$1} = 0 if /\@SQ\tSN:(.+)\tLN:\d+/;
+            next;
+        }
 
     }
 
