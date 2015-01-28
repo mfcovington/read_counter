@@ -110,7 +110,7 @@ for my $bam (@bam_file_list) {
         open my $bam_fh, '-|', "samtools view $_";
         for my $line (<$bam_fh>) {
             my @elements = split /\s/, $line;
-            next unless defined $seq_file && exists $seq_list{ $elements[2] };
+            next if defined $seq_file && !exists $seq_list{ $elements[2] };
             $gene_counts{ $elements[2] }++;
         }
         close $bam_fh;
