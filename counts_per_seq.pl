@@ -9,6 +9,7 @@ use strict;
 use warnings;
 use autodie;
 use feature 'say';
+use File::Path 'make_path';
 use Getopt::Long;
 
 my $usage = <<EOF;
@@ -116,6 +117,7 @@ for my $bam (@bam_file_list) {
     }
 
     # write to output file(s)
+    make_path $out_dir;
     my ($id) = $bam =~ m|.*\/([^\/]*)(?(?{ !defined $consolidate; })\.bam)|;
     $id .= ".$seq_file" if defined $seq_file;
     unless ($num_only) {
