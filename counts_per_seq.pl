@@ -106,6 +106,7 @@ for my $bam (@bam_file_list) {
 
     # count reads per sequence
     for (@bam_group) {
+        next unless /^.+\.bam$/;
         say "  Processing: $_" if $verbose;
         open my $bam_fh, '-|', "samtools view $_";
         for my $line (<$bam_fh>) {
