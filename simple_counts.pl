@@ -51,6 +51,20 @@ sub get_counts {
     my ( $alignment_file, $sam ) = @_;
     my %counts;
 
+    my $alignment_fh;
+    if ($sam) {
+        open $alignment_fh, "<", $alignment_file;
+    }
+    else {
+        open $alignment_fh, "-|", "samtools view -H $alignment_file";
+    }
+
+    while (<$alignment_fh>) {
+
+    }
+
+    close $alignment_fh;
+
     return \%counts;
 }
 
