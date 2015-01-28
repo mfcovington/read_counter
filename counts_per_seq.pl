@@ -9,6 +9,7 @@ use strict;
 use warnings;
 use autodie;
 use feature 'say';
+use File::Path 'make_path';
 use Getopt::Long;
 
 my $usage = <<EOF;
@@ -105,17 +106,19 @@ for my $bam (@bam_file_list) {
 
     # count reads per sequence
     for (@bam_group) {
+        next unless /^.+\.bam$/;
         say "  Processing: $_" if $verbose;
         open my $bam_fh, '-|', "samtools view $_";
-        for my $line (<$bam_fh>) {
+        while ( my $line = <$bam_fh> ) {
             my @elements = split /\s/, $line;
-            next unless defined $seq_file && exists $seq_list{ $elements[2] };
+            next if defined $seq_file && !exists $seq_list{ $elements[2] };
             $gene_counts{ $elements[2] }++;
         }
         close $bam_fh;
     }
 
     # write to output file(s)
+    make_path $out_dir;
     my ($id) = $bam =~ m|.*\/([^\/]*)(?(?{ !defined $consolidate; })\.bam)|;
     $id .= ".$seq_file" if defined $seq_file;
     unless ($num_only) {
