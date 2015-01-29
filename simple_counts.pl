@@ -9,7 +9,6 @@ use warnings;
 use Log::Reproducible;
 use autodie;
 use feature 'say';
-use File::Basename;
 use File::Path 'make_path';
 use Getopt::Long;
 use Parallel::ForkManager;
@@ -81,13 +80,6 @@ sub get_counts {
     close $alignment_fh;
 
     return \%counts;
-}
-
-sub name_counts_file {
-    my ( $alignment_file, $out_dir ) = @_;
-    my $sample = fileparse( $alignment_file, qr/[sb]am/i );
-
-    return "$out_dir/${sample}counts";
 }
 
 sub usage {

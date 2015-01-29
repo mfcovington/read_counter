@@ -2,6 +2,7 @@ use strict;
 use warnings;
 use autodie;
 use feature 'say';
+use File::Basename;
 use List::Util 'sum';
 
 sub counts_per_file {
@@ -22,6 +23,13 @@ sub import_counts {
     close $counts_fh;
 
     return \%counts;
+}
+
+sub name_counts_file {
+    my ( $input_file, $out_dir ) = @_;
+    my $sample = fileparse( $input_file, qr/[sb]am/i );
+
+    return "$out_dir/${sample}counts";
 }
 
 sub total_counts {
