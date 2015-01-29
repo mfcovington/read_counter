@@ -29,4 +29,15 @@ sub total_counts {
     return sum values %$counts;
 }
 
+sub write_counts {
+    my ( $counts, $counts_file, $csv ) = @_;
+
+    open my $counts_fh, ">", $counts_file;
+    for my $gene ( sort keys %$counts ) {
+        my $delimiter = $csv ? ',' : "\t";
+        say $counts_fh join $delimiter, $gene, $$counts{$gene};
+    }
+    close $counts_fh;
+}
+
 1;

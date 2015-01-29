@@ -14,6 +14,10 @@ use File::Path 'make_path';
 use Getopt::Long;
 use Parallel::ForkManager;
 
+use FindBin;
+use lib "$FindBin::Bin";
+use read_counter;
+
 my ( $csv, $verbose, $help );
 my $out_dir = '.';
 my $threads = 1;
@@ -122,15 +126,4 @@ sub validate_options {
     elsif ($help) {
         die usage();
     }
-}
-
-sub write_counts {
-    my ( $counts, $counts_file, $csv ) = @_;
-
-    open my $counts_fh, ">", $counts_file;
-    for my $gene ( sort keys %$counts ) {
-        my $delimiter = $csv ? ',' : "\t";
-        say $counts_fh join $delimiter, $gene, $$counts{$gene};
-    }
-    close $counts_fh;
 }
