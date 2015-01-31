@@ -36,6 +36,12 @@ sub downsample_reads {
 
     my ( $fraction_int, $fraction_dec ) = $fraction =~ /(-?\d+)?\.(\d+)/;
     $fraction_int //= 0;
+
+    die <<EOF if $seed ne '' && $fraction_int > 0 && $seed != $fraction_int;
+ERROR: Random seed has been set as $fraction_int (via '--fraction $fraction') and as $seed (via '--seed $seed').
+       Please use a single method to set the random seed.
+EOF
+
     my $seed_fraction
         = $fraction_int == 0 ? "$seed.$fraction_dec" : $fraction;
 
