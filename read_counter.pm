@@ -11,6 +11,23 @@ sub counts_per_file {
     say join "\t", $counts_file, $total_counts;
 }
 
+sub count_reads_in_sam {
+    my ( $sam_file ) = @_;
+    my ( $mapped, $unmapped );
+
+    my $cmd = "samtools view -S $sam_file";
+    open my $cmd_fh, "-|", $cmd;
+    while (<$cmd_fh>) {
+        if   (/^[^\t]+\t4\t\*\t/) { $unmapped++; }
+        else                     { $mapped++; }
+    }
+    close $cmd_fh;
+
+    my $total = $mapped + $unmapped;
+
+    return $total, $mapped, $unmapped;
+}
+
 sub downsample_reads {
     my ( $input_file, $output_file, $fraction, $seed ) = @_;
 
