@@ -4,7 +4,7 @@ use autodie;
 use feature 'say';
 use File::Basename;
 use File::Path 'make_path';
-use List::Util 'sum';
+use List::Util qw(min sum);
 
 sub counts_per_file {
     my ( $counts_file, $total_counts ) = @_;
@@ -63,6 +63,23 @@ sub import_counts {
     close $counts_fh;
 
     return \%counts;
+}
+
+sub minimum_read_counts {
+    my ( @sam_file_list ) = @_;
+
+    my $min_total_reads    = "inf";
+    my $min_mapped_reads   = "inf";
+    my $min_unmapped_reads = "inf";
+    for my $sam_file (@sam_file_list) {
+        my ( $total, $mapped, $unmapped ) = count_reads_in_sam($sam_file);
+
+        $min_total_reads    = min $total,    $min_total_reads;
+        $min_mapped_reads   = min $mapped,   $min_mapped_reads;
+        $min_unmapped_reads = min $unmapped, $min_unmapped_reads;
+    }
+
+    return $min_total_reads, $min_mapped_reads, $min_unmapped_reads;
 }
 
 sub name_counts_file {
