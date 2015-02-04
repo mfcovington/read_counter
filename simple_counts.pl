@@ -9,10 +9,13 @@ use warnings;
 use Log::Reproducible;
 use autodie;
 use feature 'say';
-use File::Basename;
 use File::Path 'make_path';
 use Getopt::Long;
 use Parallel::ForkManager;
+
+use FindBin;
+use lib "$FindBin::Bin";
+use read_counter;
 
 my ( $csv, $verbose, $help );
 my $out_dir = '.';
@@ -79,13 +82,6 @@ sub get_counts {
     return \%counts;
 }
 
-sub name_counts_file {
-    my ( $alignment_file, $out_dir ) = @_;
-    my $sample = fileparse( $alignment_file, qr/[sb]am/i );
-
-    return "$out_dir/${sample}counts";
-}
-
 sub usage {
     return <<EOF;
 
@@ -122,15 +118,4 @@ sub validate_options {
     elsif ($help) {
         die usage();
     }
-}
-
-sub write_counts {
-    my ( $counts, $counts_file, $csv ) = @_;
-
-    open my $counts_fh, ">", $counts_file;
-    for my $gene ( sort keys %$counts ) {
-        my $delimiter = $csv ? ',' : "\t";
-        say $counts_fh join $delimiter, $gene, $$counts{$gene};
-    }
-    close $counts_fh;
 }
