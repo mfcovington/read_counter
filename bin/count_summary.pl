@@ -11,7 +11,7 @@ use feature 'say';
 use List::Util qw(min max sum);
 
 use FindBin;
-use lib "$FindBin::Bin";
+use lib "$FindBin::Bin/../lib";
 use read_counter;
 
 my @counts_file_list = @ARGV;

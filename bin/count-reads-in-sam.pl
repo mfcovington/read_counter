@@ -10,7 +10,7 @@ use autodie;
 use feature 'say';
 
 use FindBin;
-use lib "$FindBin::Bin";
+use lib "$FindBin::Bin/../lib";
 use read_counter;
 
 my $sam_file = $ARGV[0];

@@ -14,7 +14,7 @@ use Getopt::Long;
 use Parallel::ForkManager;
 
 use FindBin;
-use lib "$FindBin::Bin";
+use lib "$FindBin::Bin/../lib";
 use read_counter;
 
 my ( $csv, $verbose, $help );

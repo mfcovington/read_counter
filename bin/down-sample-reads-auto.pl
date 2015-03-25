@@ -15,7 +15,7 @@ use List::Util qw(min);
 use Pod::Usage;
 
 use FindBin;
-use lib "$FindBin::Bin";
+use lib "$FindBin::Bin/../lib";
 use read_counter;
 
 =head1 TITLE
