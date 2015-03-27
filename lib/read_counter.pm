@@ -60,6 +60,9 @@ sub import_counts {
         while (<$counts_fh>) {
             chomp;
             my ( $gene, $depth ) = split /[\t,]/;
+
+            next if $gene eq '*';
+
             $counts{$gene} = $depth;
         }
     close $counts_fh;
