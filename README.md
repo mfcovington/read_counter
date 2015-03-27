@@ -3,6 +3,8 @@
 <!-- MarkdownTOC -->
 
 - [Count number of reads mapped to each reference sequence](#count-number-of-reads-mapped-to-each-reference-sequence)
+    - [`simple_counts.pl`](#simple_countspl)
+    - [`counts_per_seq.pl`](#counts_per_seqpl)
 - [Summarize counts files](#summarize-counts-files)
 - [Get quick, simple summary of mapped, unmapped, and total reads in SAM file](#get-quick-simple-summary-of-mapped-unmapped-and-total-reads-in-sam-file)
 
@@ -10,7 +12,24 @@
 
 ## Count number of reads mapped to each reference sequence
 
-`counts_per_seq.pl` is a script that does the following: 
+### `simple_counts.pl`
+
+- Read through the specified SAM/BAM files
+- Count the number of reads mapping to each reference sequence
+- For each alignment file, write an output file with # of reads per sequence
+
+Usage:
+
+    perl simple_counts.pl [options] <Alignment file(s)>
+
+    Options:
+      -o, --out_dir    Output directory [.]
+      -c, --csv        Output comma-delimited file (Default is tab-delimited)
+      -t, --threads    Number of files to process simultaneously [1]
+      -v, --verbose    Report current progress
+      -h, --help       Display this usage information
+
+### `counts_per_seq.pl`
 
 - Read through the BAM files in a directory
 - Count the number of reads mapping to each reference sequence
