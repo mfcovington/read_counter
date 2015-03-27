@@ -1,3 +1,10 @@
+# Read Counting Scripts
+
+<!-- MarkdownTOC -->
+
+- [Count number of reads mapped to each reference sequence](#count-number-of-reads-mapped-to-each-reference-sequence)
+
+<!-- /MarkdownTOC -->
 
 ## Count number of reads mapped to each reference sequence
 
