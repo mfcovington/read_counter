@@ -3,6 +3,7 @@
 <!-- MarkdownTOC -->
 
 - [Count number of reads mapped to each reference sequence](#count-number-of-reads-mapped-to-each-reference-sequence)
+- [Get quick, simple summary of mapped, unmapped, and total reads in SAM file](#get-quick-simple-summary-of-mapped-unmapped-and-total-reads-in-sam-file)
 
 <!-- /MarkdownTOC -->
 
@@ -36,3 +37,11 @@ Usage:
         † A custom prefix/suffix combo can be used to restrict input files
         ‡ If no sorting options are chosen, two files are output for each
           input (one sorted by sequence name and the other by # of counts)
+
+## Get quick, simple summary of mapped, unmapped, and total reads in SAM file
+
+`count-reads-in-sam.pl` is a very simple script that takes a single SAM file and reports the numbers of mapped reads, unmapped reads, and total reads.
+
+Usage:
+
+    perl count-reads-in-sam.pl path/to/file.sam
