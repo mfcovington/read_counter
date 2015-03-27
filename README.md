@@ -3,6 +3,7 @@
 <!-- MarkdownTOC -->
 
 - [Count number of reads mapped to each reference sequence](#count-number-of-reads-mapped-to-each-reference-sequence)
+- [Summarize counts files](#summarize-counts-files)
 - [Get quick, simple summary of mapped, unmapped, and total reads in SAM file](#get-quick-simple-summary-of-mapped-unmapped-and-total-reads-in-sam-file)
 
 <!-- /MarkdownTOC -->
@@ -37,6 +38,19 @@ Usage:
         † A custom prefix/suffix combo can be used to restrict input files
         ‡ If no sorting options are chosen, two files are output for each
           input (one sorted by sequence name and the other by # of counts)
+
+## Summarize counts files
+
+`count_summary.pl` is a script that does the following:
+
+- Import multiple counts files created by `simple_counts.pl` or `counts_per_seq.pl`
+- Output a summary:
+    - Counts for each file
+    - Minimum, maximum, and mean counts for set of files
+
+Usage:
+
+    perl count_summary.pl path/to/sample.counts ...
 
 ## Get quick, simple summary of mapped, unmapped, and total reads in SAM file
 
