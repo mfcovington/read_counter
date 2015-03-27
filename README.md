@@ -5,6 +5,7 @@
 - [Count number of reads mapped to each reference sequence](#count-number-of-reads-mapped-to-each-reference-sequence)
     - [`simple_counts.pl`](#simple_countspl)
     - [`counts_per_seq.pl`](#counts_per_seqpl)
+    - [Differences between `simple_counts.pl` and `counts_per_seq.pl`](#differences-between-simple_countspl-and-counts_per_seqpl)
 - [Summarize counts files](#summarize-counts-files)
 - [Get quick, simple summary of mapped, unmapped, and total reads in SAM file](#get-quick-simple-summary-of-mapped-unmapped-and-total-reads-in-sam-file)
 
@@ -57,6 +58,18 @@ Usage:
         † A custom prefix/suffix combo can be used to restrict input files
         ‡ If no sorting options are chosen, two files are output for each
           input (one sorted by sequence name and the other by # of counts)
+
+### Differences between `simple_counts.pl` and `counts_per_seq.pl`
+
+`simple_counts.pl` and `counts_per_seq.pl` are functionally similar to one another. The main differences are as follows:
+
+- Unique to `simple_counts.pl`:
+    - Potentially must faster, since alignment files can be analyzed in parallel
+    - Works for SAM files, in addition to BAM files
+- Unique to `counts_per_seq.pl`:
+    - Counts files can be sorted by number of counts, in addition to sequence name
+    - The number of unmapped reads is included in the counts file (labeled as as '*')
+    - Provides the option to consolidate related samples (e.g. multiple replicates of a sample)
 
 ## Summarize counts files
 
