@@ -64,6 +64,7 @@ die
   if $alpha_only && $num_only;
 
 my @bam_file_list = glob "$bam_dir/$prefix*$suffix";
+die "Must specify at least one .bam file\n" unless @bam_file_list;
 
 # consolidate similar samples/replicates, if applicable
 if ( defined $consolidate ) {

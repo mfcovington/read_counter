@@ -102,6 +102,9 @@ sub validate_options {
 
     my @errors;
 
+    push @errors, "Must specify at least one .sam/.bam file"
+        unless @$alignment_file_list;
+
     for (@$alignment_file_list) {
         push @errors, "File '$_' not found" unless -e $_;
         push @errors, "File '$_' is not a .sam/.bam file"
