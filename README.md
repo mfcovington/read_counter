@@ -7,7 +7,12 @@
     - [`counts_per_seq.pl`](#counts_per_seqpl)
     - [Differences between `simple_counts.pl` and `counts_per_seq.pl`](#differences-between-simple_countspl-and-counts_per_seqpl)
 - [Summarize counts files](#summarize-counts-files)
+    - [`count_summary.pl`](#count_summarypl)
 - [Get quick, simple summary of mapped, unmapped, and total reads in SAM file](#get-quick-simple-summary-of-mapped-unmapped-and-total-reads-in-sam-file)
+    - [`count-reads-in-sam.pl`](#count-reads-in-sampl)
+- [Downsample reads in an alignment file](#downsample-reads-in-an-alignment-file)
+    - [`down-sample-reads-auto.pl`](#down-sample-reads-autopl)
+    - [`down-sample-reads.pl`](#down-sample-readspl)
 
 <!-- /MarkdownTOC -->
 
@@ -73,7 +78,7 @@ Usage:
 
 ## Summarize counts files
 
-`count_summary.pl` is a script that does the following:
+### `count_summary.pl`
 
 - Import multiple counts files created by `simple_counts.pl` or `counts_per_seq.pl`
 - Output a summary:
@@ -86,8 +91,42 @@ Usage:
 
 ## Get quick, simple summary of mapped, unmapped, and total reads in SAM file
 
-`count-reads-in-sam.pl` is a very simple script that takes a single SAM file and reports the numbers of mapped reads, unmapped reads, and total reads.
+### `count-reads-in-sam.pl`
+
+This is a very simple script that takes a single SAM file and reports the numbers of mapped reads, unmapped reads, and total reads.
 
 Usage:
 
     perl count-reads-in-sam.pl path/to/file.sam
+
+## Downsample reads in an alignment file
+
+The following scripts downsample alignment files using a [samtools](http://www.htslib.org)-based approach (i.e., `samtools view -s`).
+
+### `down-sample-reads-auto.pl`
+
+Given a list of SAM files, automatically down-sample reads to match the lowest coverage.
+
+Usage:
+
+    perl down-sample-reads-auto.pl [options] <Alignment file(s)>
+
+    Options and Arguments:
+          -o, --out_dir     Output directory [.]
+          -s, --seed        Random seed for down-sampling [0 aka -1]
+          -v, --verbose     Report current progress
+          -h, -?, --help    Display information about usage, options, and arguments
+          -m, --man         Display man page
+
+### `down-sample-reads.pl`
+
+Given a list of SAM files, down-sample reads based on a specified fraction value.
+
+Usage:
+
+    perl down-sample-reads.pl [options] -f <fraction> <Alignment file(s)>
+
+    Options and Arguments:
+          -f, --fraction    Fraction to use for downsampling
+          -o, --out_dir     Output directory [.]
+          -s, --seed        Random seed for down-sampling [0 aka -1]
