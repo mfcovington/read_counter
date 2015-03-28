@@ -11,7 +11,7 @@ use feature 'say';
 use Getopt::Long;
 
 use FindBin;
-use lib "$FindBin::Bin";
+use lib "$FindBin::Bin/../lib";
 use read_counter;
 
 my $fraction;

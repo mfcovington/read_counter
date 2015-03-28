@@ -10,11 +10,17 @@ use autodie;
 use feature 'say';
 
 use FindBin;
-use lib "$FindBin::Bin";
+use lib "$FindBin::Bin/../lib";
 use read_counter;
 
 my $sam_file = $ARGV[0];
+die "Must specify a SAM file.\n" unless $sam_file =~ /.+\.sam/i;
+
 my ( $total, $mapped, $unmapped ) = count_reads_in_sam($sam_file);
-say $total;
-say $mapped;
-say $unmapped;
+
+print <<SUMMARY;
+SAM file: $sam_file
+Mapped:   $mapped
+Unmapped: $unmapped
+Total:    $total
+SUMMARY
