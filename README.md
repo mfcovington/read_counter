@@ -130,3 +130,5 @@ Usage:
           -f, --fraction    Fraction to use for downsampling
           -o, --out_dir     Output directory [.]
           -s, --seed        Random seed for down-sampling [0 aka -1]
+
+*Version 0.5.1*
