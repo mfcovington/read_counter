@@ -20,11 +20,11 @@ use read_counter;
 
 =head1 TITLE
 
-down-sample-reads.auto.pl - Down-sample reads in bulk w/ auto-calc'd fractions
+down-sample-reads-auto.pl - Down-sample reads in bulk w/ auto-calc'd fractions
 
 =head1 SYNOPSIS
 
-perl down-sample-reads.auto.pl [options] <Alignment file(s)>
+perl down-sample-reads-auto.pl [options] <Alignment file(s)>
 
 =head1 DESCRIPTION
 
