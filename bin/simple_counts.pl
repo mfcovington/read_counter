@@ -14,7 +14,7 @@ use Getopt::Long;
 use Parallel::ForkManager;
 
 use FindBin;
-use lib "$FindBin::Bin";
+use lib "$FindBin::Bin/../lib";
 use read_counter;
 
 my ( $csv, $verbose, $help );
@@ -101,6 +101,9 @@ sub validate_options {
     my ( $alignment_file_list, $threads, $help ) = @_;
 
     my @errors;
+
+    push @errors, "Must specify at least one .sam/.bam file"
+        unless @$alignment_file_list;
 
     for (@$alignment_file_list) {
         push @errors, "File '$_' not found" unless -e $_;

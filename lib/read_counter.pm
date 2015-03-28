@@ -13,7 +13,9 @@ sub counts_per_file {
 
 sub count_reads_in_sam {
     my ( $sam_file ) = @_;
-    my ( $mapped, $unmapped );
+
+    my $mapped   = 0;
+    my $unmapped = 0;
 
     my $cmd = "samtools view -S $sam_file";
     open my $cmd_fh, "-|", $cmd;
@@ -58,6 +60,9 @@ sub import_counts {
         while (<$counts_fh>) {
             chomp;
             my ( $gene, $depth ) = split /[\t,]/;
+
+            next if $gene eq '*';
+
             $counts{$gene} = $depth;
         }
     close $counts_fh;
