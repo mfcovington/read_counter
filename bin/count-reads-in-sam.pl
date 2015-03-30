@@ -14,7 +14,8 @@ use lib "$FindBin::Bin/../lib";
 use read_counter;
 
 my $sam_file = $ARGV[0];
-die "Must specify a SAM file.\n" unless $sam_file =~ /.+\.sam/i;
+die "Must specify a SAM file.\n"
+    unless defined $sam_file && $sam_file =~ /.+\.sam/i;
 
 my ( $total, $mapped, $unmapped ) = count_reads_in_sam($sam_file);
 
