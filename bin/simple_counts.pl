@@ -85,7 +85,8 @@ sub get_counts {
 sub usage {
     return <<EOF;
 
-Usage: $0 [options] <Alignment file(s)>
+Usage:
+    perl $0 [options] <Alignment file(s)>
 
 Options:
   -o, --out_dir    Output directory [.]
@@ -114,11 +115,11 @@ sub validate_options {
     push @errors, "Option '--threads' must be an integer greater than 0"
         if $threads <= 0;
 
-    if (@errors) {
+    if ($help) {
+        die usage();
+    }
+    elsif (@errors) {
         my $error_string = join "\n", map {"ERROR: $_"} @errors;
         die usage(), $error_string, "\n\n";
-    }
-    elsif ($help) {
-        die usage();
     }
 }
